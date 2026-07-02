@@ -93,3 +93,41 @@ to authenticated
 using (
     userid = (auth.uid())::text
 );
+
+-- ==========================================
+-- ALBUKHR MAINNET
+-- TABLE: withdraw_requests
+-- Version: 1.0
+-- ==========================================
+
+create extension if not exists pgcrypto;
+
+create table if not exists public.withdraw_requests (
+
+    id uuid primary key default gen_random_uuid(),
+
+    userid text not null,
+
+    project text not null,
+
+    amount numeric not null,
+
+    wallet text not null,
+
+    type text not null,
+
+    status text not null default 'pending',
+
+    txid text,
+
+    created_at timestamptz not null default now(),
+
+    processed_at timestamptz,
+
+    fee numeric not null default 0,
+
+    receive numeric not null default 0
+
+);
+
+alter table public.withdraw_requests disable row level security;
