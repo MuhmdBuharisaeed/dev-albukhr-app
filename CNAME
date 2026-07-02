@@ -1,1 +1,95 @@
 dev.albukhr.com
+
+
+/* ======================================
+SUPABASE SQL Editor
+====================================== */
+
+-- ==========================================
+-- ALBUKHR MAINNET
+-- TABLE: stakes
+-- Version: 1.0
+-- ==========================================
+
+create extension if not exists pgcrypto;
+
+create table if not exists public.stakes (
+
+    id uuid primary key default gen_random_uuid(),
+
+    created_at timestamptz not null default now(),
+
+    userid text not null,
+
+    project text not null,
+
+    amount numeric not null,
+
+    duration numeric not null,
+
+    txid text,
+
+    reward numeric not null default 0,
+
+    type text not null,
+
+    withdrawnReward numeric not null default 0,
+
+    unlockTime bigint not null,
+
+    wallet text,
+
+    withdrawnCapital numeric not null default 0
+
+);
+
+alter table public.stakes
+enable row level security;
+
+---------------------------------------------------
+-- POLICY 1
+---------------------------------------------------
+
+create policy "Allow all"
+
+on public.stakes
+
+for all
+
+to public
+
+using (true)
+
+with check (true);
+
+---------------------------------------------------
+-- POLICY 2
+---------------------------------------------------
+
+create policy "user can insert stake"
+
+on public.stakes
+
+for insert
+
+to authenticated
+
+with check (
+    userid = (auth.uid())::text
+);
+
+---------------------------------------------------
+-- POLICY 3
+---------------------------------------------------
+
+create policy "user owns stakes"
+
+on public.stakes
+
+for select
+
+to authenticated
+
+using (
+    userid = (auth.uid())::text
+);
