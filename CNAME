@@ -131,3 +131,23 @@ create table if not exists public.withdraw_requests (
 );
 
 alter table public.withdraw_requests disable row level security;
+
+CREATE TABLE transactions (
+
+    id BIGSERIAL PRIMARY KEY,
+
+    payment_id TEXT UNIQUE NOT NULL,
+
+    from_wallet TEXT NOT NULL,
+
+    to_wallet TEXT NOT NULL,
+
+    amount NUMERIC(20,7) NOT NULL,
+
+    asset TEXT NOT NULL,
+
+    transaction_type TEXT NOT NULL,
+
+    created_at TIMESTAMPTZ NOT NULL,
+
+    inserted_at TIMESTAMPTZ DEFAULT NOW()
